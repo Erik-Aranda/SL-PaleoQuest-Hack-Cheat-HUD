@@ -21,7 +21,8 @@ float TIME_DELAY_SECONDS_PASS_REGIONS = 8.0;
 float X1_SPEED = 0.044444444;
 float X2_SPEED = 10.5;
 
-string notecard_name;
+string enganche;
+string notecard_name = "vectors";
 string text1 = "[INFO] ";
 string text2 = "Loading...";
 string text4 = "Click the 'TELEPORT'.";
@@ -86,7 +87,7 @@ ResetV()
 
 NotecardAdjust(string list_vector_name)
 {
-    notecard_name=list_vector_name;
+    enganche=list_vector_name;
     notecardLine=0;
     if(llGetInventoryKey(notecard_name) == NULL_KEY)
     {
@@ -226,6 +227,7 @@ default
             llSetTimerEvent(0.0);
             ResetV();
             vectors=[];
+            enganche="";
             finalmeta=ZERO_VECTOR;
             MS=0;
             llSetTimerEvent(DEG_TO_RAD);
@@ -288,6 +290,7 @@ default
                     TeleportNO();
                     llOwnerSay(text1+"Reseted/Started.");
                     MS=0; //
+                    enganche="";
                     vectors=[];
                     llSetTimerEvent(DEG_TO_RAD);
                     llListenRemove(Listens);
@@ -346,6 +349,7 @@ default
         {
             llStopMoveToTarget();
             ResetV();
+            enganche="";
             vectors=[];
             if(MS==1|MS==5|MS==9|MS==13|MS==16)
             {
@@ -506,15 +510,23 @@ default
         if(data!=EOF)
         {
             ++notecardLine;
-            vectors += [(vector)data];
-            if(data=="<0,0,0>")
+            if(data=="#"+enganche)
             {
-                finalmeta = llList2Vector(vectors,0);
-                llSetTimerEvent(DEG_TO_RAD);
-                llOwnerSay(text1+"Done.");
-                return;
+                enganche="OK";
             }
-            else
+            else if(enganche=="OK")
+            {
+                vectors += [(vector)data];
+                if(data=="<0,0,0>")
+                {
+                    enganche="";
+                    finalmeta = llList2Vector(vectors,0);
+                    llSetTimerEvent(DEG_TO_RAD);
+                    llOwnerSay(text1+"Done.");
+                    return;
+                }
+            }
+            if(enganche!="")
             {
                 llGetNotecardLine(notecard_name,notecardLine);
             }
