@@ -1,10 +1,11 @@
-//en la mision 1 al agarrar la mascara ir bajando automaticamente
-//22/33/37 --tabla chest
-//--arena
+/* Changelog:
+    //En la mision 1 al agarrar la mascara ir bajando automaticamente
+*/
+
 key owner;
 
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
-string name = "HPV1.0 - ErikV7 Hud's";
+string name = "HPV1.05 - ErikV7 Hud's";
 string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
 
 vector finalmeta;
@@ -21,18 +22,20 @@ float X1_SPEED = 0.044444444;
 float X2_SPEED = 10.5;
 
 string text1 = "[INFO] ";
-string text2 = " selected.";
-string text3 = "Mision ";
-string text4 = "Clickie el teleporte.";
-string A = "RESET";
-string B = "LISTO";
+string text4 = "Click the 'TELEPORT'.";
+string text5 = "Click 'READY' when ";
+string A = "ST/RST";
+string B = "READY";
 string C = "STOP";
-string D = "MS1";
-string E = "MS2";
-string F = "MS3";
-string G = "MS4";
-string H = "MS5";
+string D = "+MDump";
+string E = "+MSelect";
 string I = "+GetPos";
+
+//Camaras:
+string F = "<< Back";
+string H = "[STOP]";
+string J = "Next >>";
+//
 
 list PARK = ["Portal Park 1","Portal Park 2"];
 list LR1 = ["PaleoQuest A1","PaleoQuest B1","PaleoQuest C1"];
@@ -79,7 +82,6 @@ list X3_RG = [
     ,<115.98560, 170.12180, 37.67257>
     ,<114.29010, 173.77560, 38.92477>
     ,<112.79820, 174.30520, 39.60540>
-
     ,<110.00110, 178.04950, 40.05676>
     ,<109.78100, 182.41050, 43.10867>
     ,<109.01720, 185.97690, 45.10758>
@@ -193,27 +195,21 @@ list X4_RG = [
     ,<164.64340, 59.67519, 31.27951>
     ,<164.82880, 65.57690, 31.27418>
     ,<168.06160, 70.09481, 31.26733>
-
     ,<161.39700, 78.46170, 31.27284>
     ,<154.91260, 80.86224, 31.73977>
     ,<154.07600, 81.55031, 32.39440>
     ,<152.02590, 84.63282, 31.03145>
     ,<151.34170, 87.11840, 27.64611>
     ,<150.05430, 88.09851, 24.85746>
-
     ,<153,91,27>
-
     ,<153.89560, 94.46835, 22.65027>
     ,<149,99,22>
     ,<146,104,23>
     ,<143,110,23>
     ,<138,115,23>
     ,<135,119,23>
-
     ,<130,122,23>
     ,<130,122,22>
-
-    /////////////
     ,<127.70430, 123.42350, 22.58329>
     ,<123.54990, 125.42250, 22.66633>
     ,<121.74170, 126.35850, 22.98024>
@@ -244,8 +240,6 @@ list X4_RG = [
     ,<33.13110, 46.46725, 21.39855>
     ,<31.42579, 44.29631, 21.39855>
     ,<30.01864, 42.57525, 21.39855>
-    ////////
-
     ,<0,0,0>
 ];
 
@@ -327,11 +321,9 @@ list X5_RG1 = [
     ,<195.35960, 78.16009, 21.00861>
     ,<197.45230, 75.63243, 21.26086>
     ,<199.58460, 73.05919, 21.15764>
-
     ,<201.43740, 70.54178, 22.00801>
     ,<203.11700, 68.27359, 22.00300>
     ,<205.05550, 65.85287, 22.00005>
-
     ,<207.22590, 63.23077, 21.16336>
     ,<209.08600, 61.09668, 22.40497>
     ,<211.10980, 58.67941, 22.52069>
@@ -521,7 +513,6 @@ ProLAVA2(list pos,float SPEED2X,float dists)
     if(finalmeta==ZERO_VECTOR)
     {
         llStopMoveToTarget();
-        finalmeta=ZERO_VECTOR;
         ResetV();
     }
     else
@@ -538,12 +529,15 @@ Server()
 {
     llSetMemoryLimit(65535);
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
+    llOwnerSay(text1+inf+" - Started.");
+    llOwnerSay(text1+"Remember to have 'Always Run' Enabled and 'RLV' Enabled.");
+    llOwnerSay(text1+"Activate 'CTRL + R' (Running)");
     owner = llGetOwner();
     string regionX = llGetRegionName();
     llTargetOmega(<0.1,0.0,0.0>,TWO_PI,0.1);
     if(llKey2Name(owner)!="Reddlyy Resident")
     {
-        if(llGetSubString(regionX,0,10)!="PaleoQuest " & regionX!="" & regionX!=" ")
+        if(llGetSubString(regionX,0,10)!="PaleoQuest ")
         {
             llOwnerSay("@remoutfit:alpha=n");
             llSleep(0.1);
@@ -555,26 +549,16 @@ Server()
             llSleep(0.1);
             llOwnerSay("@remoutfit:alpha=y");
         }
-        //llOwnerSay("@recvim_sec=n");
-    }
-    else
-    {
-        llOwnerSay("Bienvenido creador.");
     }
     llOwnerSay("@recvim_sec=y");
-
     llOwnerSay("@detach=y");
     llOwnerSay("@remoutfit:alpha=y");
-    llOwnerSay("@detach=y");
-    llOwnerSay("@remoutfit:alpha=y");
+    llOwnerSay("@clear");
     llSetLinkPrimitiveParamsFast(LINK_SET,[PRIM_POSITION,<0.00000, -0.41529, -0.12672>]);
     llSetObjectName(name);
-    llOwnerSay("@clear");
     llSetTimerEvent(0.0);
-    llOwnerSay(">> [INFO] Recuerde de tener Always Run Enabled, RLV Enabled.");
-    llOwnerSay(">> [INFO] Activar CTRL+R(Running)");
     llSetText("",color,1.0);
-    llSetScale(<0.10000,0.10000,0.10000>);
+    llSetScale(<0.1,0.1,0.1>);
     llListenRemove(Listens);
     llSetTexture(MAINTEXTURE,ALL_SIDES);
     llSetColor(color, ALL_SIDES);
@@ -588,8 +572,8 @@ Server()
 string Strings1()
 {
     return(
-    "\nScript '"+llGetScriptName()+"'- Memoria: "+(string)llGetUsedMemory()+" de 65535"+
-    "\nCanal de comandos en /1"
+    "\nScript '"+name+"'- Memory: "+(string)llGetUsedMemory()+" to 65535"+
+    "\nButtons Commands Allowed to /1"
     );
 }
 
@@ -604,9 +588,6 @@ X()
     C,
     D,
     E,
-    F,
-    G,
-    H,
     I
     ],1);
 }
@@ -622,10 +603,6 @@ default
         if(ID!=NULL_KEY)
         {
             Server();
-        }
-        else
-        {
-            llDie();
         }
     }
     run_time_permissions(integer perm)
@@ -648,7 +625,7 @@ default
     }
     control(key id, integer level, integer edge)
     {
-        if(level & CONTROL_FWD && PULSE!=0.0)
+        if(level & CONTROL_FWD)
         {
             string region = llGetRegionName();
             if(~llListFindList(PARK,(list)region)|~llListFindList(LR1,(list)region))
@@ -669,110 +646,67 @@ default
             llSleep(0.07);
             llSetLinkPrimitiveParamsFast(0xFFFFFFFC,[6,llGetLocalPos()+<0,.005,.005>]);
             llSleep(0.04);
+            llTargetOmega(<xs,0.0,0.0>,TWO_PI,0.1);
+            X();
         }  
-        llTargetOmega(<xs,0.0,0.0>,TWO_PI,0.1);
-        X();
     }
     listen(integer channel, string name, key id, string message)
     {
-        if(llGetOwnerKey(id)==owner & channel==1)
+        if(llGetOwnerKey(id)==owner)
         {
-            if(message==B)
+            if(channel==1)
             {
-                llOwnerSay(text1+"OK.");
-
-                if(MS==3)
+                if(message==A)
                 {
-                    MS=4;
+                    TeleportNO();
+                    llOwnerSay(text1+"Reseted/Started.");
+                    MS=0;//
+                    llSetTimerEvent(DEG_TO_RAD);
+                    llListenRemove(Listens);
+                    return;
                 }
-                else if(MS==7)
+                else if(message==B)
                 {
-                    MS=8;
+                    llOwnerSay(text1+"OK.");
+                    if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25)
+                    {
+                        MS++;
+                    }
+                    llListenRemove(Listens);
+                    return;
                 }
-                else if(MS==11)
+                else if(message==C)
                 {
-                    MS=12;
+                    Teleport();
+                    llSetTimerEvent(0.0);
+                    llStopMoveToTarget();
+                    llOwnerSay(text1+"STOP.");
+                    llListenRemove(Listens);
+                    return;
                 }
-                else if(MS==18)
+                else if(message==D)
                 {
-                    MS=19;
+                    //LISTA DE LOS MS PARA INSERTAR
+                    llListenRemove(Listens);
+                    return;
                 }
-                else if(MS==22)
+                else if(message==E)
                 {
-                    MS=23;
+                    //LLTEXTBOX MS//ResetV();//MS=0;
+                    return;
                 }
-                else if(MS==25)
+                else if(message==F)
                 {
-                    MS=26;
+                    //CAMARAS REGION LR4, COFRE
+                    //CAMARA1 MISION COFRE: <246.88720, 196.77600, 33.04897>
+                    return;
                 }
-
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==A)
-            {
-                TeleportNO();
-                llOwnerSay(text1+"Reseted/Started.");
-                MS=0;//para cambiar a submisiones
-                llSetTimerEvent(DEG_TO_RAD);
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==C)
-            {
-                Teleport();
-                llSetTimerEvent(0.0);
-                llStopMoveToTarget();
-                llOwnerSay(text1+"Stop.");
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==D)
-            {
-                llOwnerSay(text1+text3+"1"+text2);
-                ResetV();
-                MS=0;
-                llSetTimerEvent(DEG_TO_RAD);
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==E)
-            {
-                llOwnerSay(text1+text3+"2"+text2);
-                ResetV();
-                llSetTimerEvent(DEG_TO_RAD);
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==F)
-            {
-                llOwnerSay(text1+text3+"3"+text2);
-                ResetV();
-                llSetTimerEvent(DEG_TO_RAD);
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==G)
-            {
-                llOwnerSay(text1+text3+"4"+text2);
-                ResetV();
-                llSetTimerEvent(DEG_TO_RAD);
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==H)
-            {
-                llOwnerSay(text1+text3+"5"+text2);
-                ResetV();
-                llSetTimerEvent(DEG_TO_RAD);
-                llListenRemove(Listens);
-                return;
-            }
-            else if(message==I)
-            {
-                llSay(0X0,text1+"Pos: "+(string)llGetPos());
-                X();
-                return;
+                else if(message==I)
+                {
+                    llSay(0X0,text1+"Pos: "+(string)llGetPos());
+                    X();
+                    return;
+                }
             }
         }
     }
@@ -804,12 +738,12 @@ default
             }
             else if(MS==21)
             {
-                llOwnerSay(text1+"Clickear LISTO cuando obtenga la llave.");
+                llOwnerSay(text1+text5+"get the key.");
                 MS=22;
             }
             else if(MS==24)
             {
-                llOwnerSay(text1+"Clickear LISTO cuando inserte la llave en el cofre y baje por el ZIPPLIN abajo");
+                llOwnerSay(text1+text5+"insert the key into the chest and go down with the ZEPPELIN below.");
                 MS=25;               
             }
             else if(MS==27)
@@ -837,13 +771,10 @@ default
             llSleep(TIME_DELAY_SECONDS_PASS_REGIONS);
             TeleportNO();
         }
-        if(~llListFindList(LR1,(list)region) && MS!=-1)
+        if(~llListFindList(LR1,(list)region) & MS!=-1)
         {
-            if(MS!=-1)
-            {
-                ProLAVA2(X2_RG,X1_SPEED,1.1);
-                MS=100;
-            }
+            ProLAVA2(X2_RG,X1_SPEED,1.1);
+            MS=100;
         }
         else if(~llListFindList(LR2,(list)region))
         {
@@ -858,12 +789,12 @@ default
                 }
                 if(MS==1)
                 {
-                    ProLAVA2(X3_RG,X2_SPEED-8.5,1.1); //7.0 OK
+                    ProLAVA2(X3_RG,X2_SPEED-8.5,1.1);
                 }
             }
             else if(MS==2)
             {
-                llOwnerSay(text1+"Clickie LISTO cuando tenga la mascara.");
+                llOwnerSay(text1+text5+"have the mask.");
                 MS=3;
             }
             else if(MS==4|MS==5)
@@ -873,7 +804,7 @@ default
             }
             else if(MS==6)
             {
-                llOwnerSay(text1+"Clickie LISTO cuando pase este conducto.");
+                llOwnerSay(text1+text5+"pass this duct.");
                 MS=7;
             }
             else if(MS==8|MS==9)
@@ -883,14 +814,14 @@ default
             }
             else if(MS==10)
             {
-                llOwnerSay(text1+"Clickie LISTO cuando haya puesto la mascara.");
+                llOwnerSay(text1+text5+"put the mask on the pharaoh.");
                 MS=11;
             }
             else if(MS==12|MS==13)
             {
                 if(MS==12)
                 {
-                    llOwnerSay(text1+"En unos momentos sera llevado a la otra region..");
+                    llOwnerSay(text1+"In a little minutes you will go to the other region.");
                     llSleep(5.0);
                     MS=13;
                 }
@@ -911,16 +842,10 @@ default
             {
                 ProLAVA2(X4_RG,X2_SPEED-8.0,1.1);
                 MS=16;
-                if(finalmeta==ZERO_VECTOR)
-                {
-                    llStopMoveToTarget();
-                    ResetV();
-                    MS=17;
-                }
             }
             else if(MS==17)
             {
-                llOwnerSay(text1+"Clicke LISTO cuando agarre el diente.");
+                llOwnerSay(text1+text5+"grab/take the tooth.");
                 MS=18;
             }
             else if(MS==19|MS==20)
@@ -949,11 +874,11 @@ default
         }
         else if(~llListFindList(LR5,(list)region))
         {
-            //Pasar al otro script
+            //Pasar al otro script si no hay memoria
         }
         else if(~llListFindList(LR6,(list)region))
         {
-            //Pasar al otro script
+            //Pasar al otro script si no hay memoria
         }
     }
 }
