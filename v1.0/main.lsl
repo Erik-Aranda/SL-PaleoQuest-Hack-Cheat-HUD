@@ -1,7 +1,6 @@
-/* Changelog:
-    //En la mision 1 al agarrar la mascara ir bajando automaticamente
-*/
+// Copyright (C) ErikV7 - https://github.com/Erik-Aranda
 
+key notecardQueryId;
 key owner;
 
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
@@ -11,6 +10,7 @@ string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
 vector finalmeta;
 vector color = <0.565,0.612,0.753>;
 
+integer notecardLine;
 integer A_TG;
 integer Listens;
 integer MS;
@@ -21,6 +21,8 @@ float TIME_DELAY_SECONDS_PASS_REGIONS = 8.0;
 float X1_SPEED = 0.044444444;
 float X2_SPEED = 10.5;
 
+string enganche;
+string notecard_name = "vectors";
 string text1 = "[INFO] ";
 string text4 = "Click the 'TELEPORT'.";
 string text5 = "Click 'READY' when ";
@@ -44,6 +46,8 @@ list LR3 = ["PaleoQuest A3","PaleoQuest B3","PaleoQuest C3"];
 list LR4 = ["PaleoQuest A4","PaleoQuest B4","PaleoQuest C4"];
 list LR5 = ["PaleoQuest A5","PaleoQuest B5","PaleoQuest C5"];
 list LR6 = ["PaleoQuest A6","PaleoQuest B6","PaleoQuest C6"];
+
+list vectors = [];
 
 Teleport()
 {
@@ -80,6 +84,22 @@ ResetV()
     A_TG=0;
 }
 
+NotecardAdjust(string list_vector_name)
+{
+    enganche=list_vector_name;
+    notecardLine=0;
+    if(llGetInventoryKey(notecard_name) == NULL_KEY)
+    {
+        llOwnerSay("[ERROR] Notecard '" + notecard_name + "' missing or unwritten");
+        llResetScript();
+    }
+    else
+    {
+        notecardQueryId = llGetNotecardLine(notecard_name,notecardLine);
+        llSetTimerEvent(0.0);
+    }
+}
+
 MoveTarget2(vector Pos,key WHOS,float SPEEDZX)
 {
     do
@@ -91,20 +111,28 @@ MoveTarget2(vector Pos,key WHOS,float SPEEDZX)
     llMoveToTarget(Pos,SPEEDZX);
 }
 
-ProLAVA2(list pos,float SPEED2X,float dists)
+ProLAVA2(string namx,float SPEED2X,float dists)
 {
-    finalmeta=llList2Vector(pos,A_TG);
-    if(finalmeta==ZERO_VECTOR)
+    list fantasma=[];
+    if(vectors==fantasma)
     {
-        llStopMoveToTarget();
-        ResetV();
+        NotecardAdjust(namx);
     }
     else
     {
-        MoveTarget2(finalmeta,owner,SPEED2X);
-        if(llVecDist(llGetPos(),finalmeta)<=dists)
+        finalmeta=llList2Vector(vectors,A_TG);
+        if(finalmeta==ZERO_VECTOR)
         {
-            A_TG+=1;
+            llStopMoveToTarget();
+            ResetV();
+        }
+        else
+        {
+            MoveTarget2(finalmeta,owner,SPEED2X);
+            if(llVecDist(llGetPos(),finalmeta)<=dists)
+            {
+                A_TG+=1;
+            }
         }
     }
 }
@@ -245,6 +273,8 @@ default
                     TeleportNO();
                     llOwnerSay(text1+"Reseted/Started.");
                     MS=0;//
+                    enganche="";
+                    vectors=[];
                     llSetTimerEvent(DEG_TO_RAD);
                     llListenRemove(Listens);
                     return;
@@ -311,6 +341,8 @@ default
         {
             llStopMoveToTarget();
             ResetV();
+            enganche="";
+            vectors=[];
             if(MS==1|MS==5|MS==9|MS==13|MS==16)
             {
                 MS++;
@@ -343,7 +375,7 @@ default
         }
         if(~llListFindList(PARK,(list)region))
         {
-            ProLAVA2(X1_Portal,X1_SPEED,1.1);
+            ProLAVA2("X1_PORTAL",X1_SPEED,1.1);
         }
         else if(llGetSubString(region,0,10)!="PaleoQuest ")
         {
@@ -357,7 +389,7 @@ default
         }
         if(~llListFindList(LR1,(list)region) & MS!=-1)
         {
-            ProLAVA2(X2_RG,X1_SPEED,1.1);
+            ProLAVA2("X2_RG",X1_SPEED,1.1);
             MS=100;
         }
         else if(~llListFindList(LR2,(list)region))
@@ -373,7 +405,7 @@ default
                 }
                 if(MS==1)
                 {
-                    ProLAVA2(X3_RG,X2_SPEED-8.5,1.1);
+                    ProLAVA2("X3_RG",X2_SPEED-8.5,1.1);
                 }
             }
             else if(MS==2)
@@ -383,7 +415,7 @@ default
             }
             else if(MS==4|MS==5)
             {
-                ProLAVA2(X3_RG1,X2_SPEED-8.5,1.1);
+                ProLAVA2("X3_RG1",X2_SPEED-8.5,1.1);
                 MS=5;
             }
             else if(MS==6)
@@ -393,7 +425,7 @@ default
             }
             else if(MS==8|MS==9)
             {
-                ProLAVA2(X3_RG2,X2_SPEED-8.5,1.1);
+                ProLAVA2("X3_RG2",X2_SPEED-8.5,1.1);
                 MS=9;
             }
             else if(MS==10)
@@ -411,7 +443,7 @@ default
                 }
                 if(MS==13)
                 {
-                    ProLAVA2(X3_RG3,X2_SPEED-8.5,1.1);
+                    ProLAVA2("X3_RG3",X2_SPEED-8.5,1.1);
                 }
             }
             else if(MS==14)
@@ -424,7 +456,7 @@ default
         {
             if(MS==0|MS==15|MS==16)
             {
-                ProLAVA2(X4_RG,X2_SPEED-8.0,1.1);
+                ProLAVA2("X4_RG",X2_SPEED-8.0,1.1);
                 MS=16;
             }
             else if(MS==17)
@@ -434,7 +466,7 @@ default
             }
             else if(MS==19|MS==20)
             {
-                ProLAVA2(X4_RG2,X2_SPEED-8.0,1.1);
+                ProLAVA2("X4_RG2",X2_SPEED-8.0,1.1);
                 MS=20;
             }
         }
@@ -442,17 +474,17 @@ default
         {
             if(MS==0|MS==20|MS==21)
             {
-                ProLAVA2(X5_RG,X2_SPEED-8.0,1.1);
+                ProLAVA2("X5_RG",X2_SPEED-8.0,1.1);
                 MS=21;
             }
             else if(MS==23|MS==24)
             {
-               ProLAVA2(X5_RG1,X2_SPEED-9.0,1.1);
+               ProLAVA2("X5_RG1",X2_SPEED-9.0,1.1);
                MS=24;
             }
             else if(MS==26|MS==27)
             {
-                ProLAVA2(X5_RG2,X2_SPEED-8.0,1.1);
+                ProLAVA2("X5_RG2",X2_SPEED-8.0,1.1);
                 MS=27;
             }
         }
@@ -465,4 +497,33 @@ default
             //Pasar al otro script si no hay memoria
         }
     }
+    dataserver(key query_id, string data)
+    {
+        if (query_id == notecardQueryId)
+        {
+            if (data == EOF)
+            {
+                llSetTimerEvent(DEG_TO_RAD);
+            }
+            else
+            {
+                ++notecardLine;
+                if(data=="#"+enganche)
+                {
+                    enganche="OK";
+                }
+                else if(data=="<0,0,0>")
+                {
+                    enganche="";
+                }
+                else if(enganche=="OK")
+                {
+                    vectors = [(vector)data] + vectors;
+                }
+                notecardQueryId = llGetNotecardLine(notecard_name, notecardLine);
+            }
+        }
+    }
 }
+
+// Copyright (C) ErikV7 - https://github.com/Erik-Aranda
