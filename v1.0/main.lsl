@@ -1,6 +1,5 @@
-// Copyright (C) ErikV7 - https://github.com/Erik-Aranda
+// Copyright (C) https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD
 
-key notecardQueryId;
 key owner;
 
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
@@ -10,6 +9,7 @@ string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
 vector finalmeta;
 vector color = <0.565,0.612,0.753>;
 
+integer volatil;
 integer notecardLine;
 integer A_TG;
 integer Listens;
@@ -24,6 +24,7 @@ float X2_SPEED = 10.5;
 string enganche;
 string notecard_name = "vectors";
 string text1 = "[INFO] ";
+string text2 = "Loading...";
 string text4 = "Click the 'TELEPORT'.";
 string text5 = "Click 'READY' when ";
 string A = "ST/RST";
@@ -95,7 +96,8 @@ NotecardAdjust(string list_vector_name)
     }
     else
     {
-        notecardQueryId = llGetNotecardLine(notecard_name,notecardLine);
+        llOwnerSay(text1+text2);
+        llGetNotecardLine(notecard_name,notecardLine);
         llSetTimerEvent(0.0);
     }
 }
@@ -113,9 +115,9 @@ MoveTarget2(vector Pos,key WHOS,float SPEEDZX)
 
 ProLAVA2(string namx,float SPEED2X,float dists)
 {
-    list fantasma=[];
-    if(vectors==fantasma)
+    if(llGetListLength(vectors)<1)
     {
+        ResetV();
         NotecardAdjust(namx);
     }
     else
@@ -144,6 +146,7 @@ Server()
     llOwnerSay(text1+inf+" - Started.");
     llOwnerSay(text1+"Remember to have 'Always Run' Enabled and 'RLV' Enabled.");
     llOwnerSay(text1+"Activate 'CTRL + R' (Running)");
+    llOwnerSay(text1+text2);
     owner = llGetOwner();
     string regionX = llGetRegionName();
     llTargetOmega(<0.1,0.0,0.0>,TWO_PI,0.1);
@@ -184,7 +187,7 @@ Server()
 string Strings1()
 {
     return(
-    "\nScript '"+name+"'- Memory: "+(string)llGetUsedMemory()+" to 65535"+
+    "\nScript '"+llGetScriptName()+"'- Memory: "+(string)llGetUsedMemory()+" to 65535"+
     "\nButtons Commands Allowed to /1"
     );
 }
@@ -215,6 +218,19 @@ default
         if(ID!=NULL_KEY)
         {
             Server();
+        }
+    }
+    changed(integer change)
+    {
+        if(change & CHANGED_REGION && volatil==1)
+        {
+            llSetTimerEvent(0.0);
+            ResetV();
+            vectors=[];
+            enganche="";
+            finalmeta=ZERO_VECTOR;
+            MS=0;
+            llSetTimerEvent(DEG_TO_RAD);
         }
     }
     run_time_permissions(integer perm)
@@ -270,9 +286,10 @@ default
             {
                 if(message==A)
                 {
+                    volatil=1;
                     TeleportNO();
                     llOwnerSay(text1+"Reseted/Started.");
-                    MS=0;//
+                    MS=0; //
                     enganche="";
                     vectors=[];
                     llSetTimerEvent(DEG_TO_RAD);
@@ -291,10 +308,11 @@ default
                 }
                 else if(message==C)
                 {
-                    Teleport();
+                    volatil=0;
                     llSetTimerEvent(0.0);
                     llStopMoveToTarget();
                     llOwnerSay(text1+"STOP.");
+                    Teleport();
                     llListenRemove(Listens);
                     return;
                 }
@@ -322,16 +340,6 @@ default
                     return;
                 }
             }
-        }
-    }
-    collision(integer num)
-    {
-        string region = llGetRegionName();
-        if(llListFindList(PARK,(list)region)==0xFFFFFFFF && llListFindList(LR1,(list)region)|llListFindList(LR3,(list)region)==0xFFFFFFFF && llListFindList(LR4,(list)region)==0xFFFFFFFF && llListFindList(LR6,(list)region)==0xFFFFFFFF)
-        {
-            llMoveToTarget(llGetPos()+<0,0,0.4>,2.0);
-            llSleep(0.05);
-            llStopMoveToTarget();
         }
     }
     timer()
@@ -387,20 +395,20 @@ default
             llSleep(TIME_DELAY_SECONDS_PASS_REGIONS);
             TeleportNO();
         }
-        if(~llListFindList(LR1,(list)region) & MS!=-1)
+        if(~llListFindList(LR1,(list)region))
         {
-            ProLAVA2("X2_RG",X1_SPEED,1.1);
-            MS=100;
+            if(MS!=-1)
+            {
+                ProLAVA2("X2_RG",X1_SPEED,1.1);
+                MS=100;
+            }
         }
         else if(~llListFindList(LR2,(list)region))
         {
-            if(MS==-1|MS==1)
+            if(MS==-1|MS==1|MS==0)
             {
-                if(MS==-1)
+                if(MS==-1|MS==0)
                 {
-                    llMoveToTarget(<138,247,91>,X2_SPEED);
-                    llSleep(3.0);
-                    llStopMoveToTarget();
                     MS=1;
                 }
                 if(MS==1)
@@ -454,7 +462,7 @@ default
         }
         else if(~llListFindList(LR3,(list)region))
         {
-            if(MS==0|MS==15|MS==16)
+            if(MS==0|MS==15|MS==16|MS==0)
             {
                 ProLAVA2("X4_RG",X2_SPEED-8.0,1.1);
                 MS=16;
@@ -472,7 +480,7 @@ default
         }
         else if(~llListFindList(LR4,(list)region))
         {
-            if(MS==0|MS==20|MS==21)
+            if(MS==0|MS==20|MS==21|MS==0)
             {
                 ProLAVA2("X5_RG",X2_SPEED-8.0,1.1);
                 MS=21;
@@ -499,31 +507,31 @@ default
     }
     dataserver(key query_id, string data)
     {
-        if (query_id == notecardQueryId)
+        if(data!=EOF)
         {
-            if (data == EOF)
+            ++notecardLine;
+            if(data=="#"+enganche)
             {
-                llSetTimerEvent(DEG_TO_RAD);
+                enganche="OK";
             }
-            else
+            else if(enganche=="OK")
             {
-                ++notecardLine;
-                if(data=="#"+enganche)
-                {
-                    enganche="OK";
-                }
-                else if(data=="<0,0,0>")
+                vectors += [(vector)data];
+                if(data=="<0,0,0>")
                 {
                     enganche="";
+                    finalmeta = llList2Vector(vectors,0);
+                    llSetTimerEvent(DEG_TO_RAD);
+                    llOwnerSay(text1+"Done.");
+                    return;
                 }
-                else if(enganche=="OK")
-                {
-                    vectors = [(vector)data] + vectors;
-                }
-                notecardQueryId = llGetNotecardLine(notecard_name, notecardLine);
+            }
+            if(enganche!="")
+            {
+                llGetNotecardLine(notecard_name,notecardLine);
             }
         }
     }
 }
 
-// Copyright (C) ErikV7 - https://github.com/Erik-Aranda
+// Copyright (C) https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD
