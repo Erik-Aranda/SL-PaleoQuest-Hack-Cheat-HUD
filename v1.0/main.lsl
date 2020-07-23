@@ -3,8 +3,9 @@
 key owner;
 
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
-string name = "HPV1.05 - ErikV7 Hud's";
+string name = "HPV1.09 - ErikV7 Hud's";
 string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
+string LINK = "https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD";
 
 vector finalmeta;
 vector color = <0.565,0.612,0.753>;
@@ -14,7 +15,9 @@ integer notecardLine;
 integer A_TG;
 integer Listens;
 integer MS;
+integer flotador_I;
 
+float flotador;
 float PULSE = 0.8;
 float xs = 0.4;
 float TIME_DELAY_SECONDS_PASS_REGIONS = 8.0;
@@ -23,7 +26,7 @@ float X2_SPEED = 10.5;
 
 string notecard_name;
 string text1 = "[INFO] ";
-string text2 = "Loading...";
+string text2 = "Loading... (do NOT change region until load)";
 string text4 = "Click the 'TELEPORT'.";
 string text5 = "Click 'READY' when ";
 string A = "ST/RST";
@@ -96,6 +99,8 @@ NotecardAdjust(string list_vector_name)
     else
     {
         llOwnerSay(text1+text2);
+        flotador = 9999.0;
+        flotador_I = 0;
         llGetNotecardLine(notecard_name,notecardLine);
         llSetTimerEvent(0.0);
     }
@@ -142,7 +147,7 @@ Server()
 {
     llSetMemoryLimit(65535);
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
-    llOwnerSay(text1+inf+" - Started.");
+    llOwnerSay(text1+inf+" - Started. "+LINK);
     llOwnerSay(text1+"Remember to have 'Always Run' Enabled and 'RLV' Enabled.");
     llOwnerSay(text1+"Activate 'CTRL + R' (Running)");
     llOwnerSay(text1+text2);
@@ -221,14 +226,20 @@ default
     }
     changed(integer change)
     {
-        if(change & CHANGED_REGION && volatil==1)
+        if(change & CHANGED_REGION)
         {
-            llSetTimerEvent(0.0);
-            ResetV();
-            vectors=[];
-            finalmeta=ZERO_VECTOR;
-            MS=0;
-            llSetTimerEvent(DEG_TO_RAD);
+            if(volatil==1)
+            {
+                volatil=0;
+                llSetTimerEvent(0.0);
+                ResetV();
+                vectors=[];
+                finalmeta=ZERO_VECTOR;
+                MS=0;
+                llSetTimerEvent(DEG_TO_RAD);
+                volatil=1;
+            }
+            llSleep(5.0);
         }
     }
     run_time_permissions(integer perm)
@@ -296,7 +307,7 @@ default
                 else if(message==B)
                 {
                     llOwnerSay(text1+"OK.");
-                    if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25)
+                    if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25|MS==29|MS==32|MS==35)
                     {
                         MS++;
                     }
@@ -370,6 +381,26 @@ default
             {
                 llOwnerSay(text1+text4);
                 MS=28;
+            }
+            else if(MS==28)
+            {
+                llOwnerSay(text1+text5+"get panel solar.");
+                MS=29;
+            }
+            else if(MS==31)
+            {
+                llOwnerSay(text1+text5+"enter to this electric entrance and then stay near of the rock.");
+                MS=32;
+            }
+            else if(MS==34)
+            {
+                llOwnerSay(text1+text5+"insert panel solar into the machine and then stay near of Resurrection Circle (near of entrance).");
+                MS=35;
+            }
+            else if(MS==37)
+            {
+                llOwnerSay(text1+text4);
+                MS=38;
             }
             else if(MS==100)
             {
@@ -458,7 +489,7 @@ default
         }
         else if(~llListFindList(LR3,(list)region))
         {
-            if(MS==0|MS==15|MS==16|MS==0)
+            if(MS==0|MS==15|MS==16)
             {
                 ProLAVA2("X4_RG",X2_SPEED-8.0,1.1);
                 MS=16;
@@ -476,14 +507,14 @@ default
         }
         else if(~llListFindList(LR4,(list)region))
         {
-            if(MS==0|MS==20|MS==21|MS==0)
+            if(MS==0|MS==20|MS==21)
             {
                 ProLAVA2("X5_RG",X2_SPEED-8.0,1.1);
                 MS=21;
             }
             else if(MS==23|MS==24)
             {
-               ProLAVA2("X5_RG1",X2_SPEED-9.0,1.1);
+               ProLAVA2("X5_RG1",X2_SPEED-8.35,1.0); //8.5 Detected //8.0 OK
                MS=24;
             }
             else if(MS==26|MS==27)
@@ -494,22 +525,53 @@ default
         }
         else if(~llListFindList(LR5,(list)region))
         {
-            //Pasar al otro script si no hay memoria
+            if(MS==0|MS==27|MS==28)
+            {
+                ProLAVA2("X6_RG",X2_SPEED-8.15,1.0);
+                MS=28;
+            }
+            else if(MS==30|MS==31)
+            {
+               ProLAVA2("X6_RG1",X2_SPEED-8.15,1.0);
+               MS=31;
+            }
+            else if(MS==33|MS==34)
+            {
+               ProLAVA2("X6_RG2",X2_SPEED-8.15,1.0);
+               MS=34;
+            }
+            else if(MS==36|MS==37)
+            {
+               ProLAVA2("X6_RG3",X2_SPEED-8.15,1.0);
+               MS=37;
+            }
         }
         else if(~llListFindList(LR6,(list)region))
         {
-            //Pasar al otro script si no hay memoria
+            if(MS==0|MS==37|MS==38)
+            {
+                //ProLAVA2("X7_RG",X2_SPEED-8.35,1.0);
+                MS=38;
+            }
         }
     }
     dataserver(key query_id, string data)
     {
-        if(data!=EOF)
+        if(data!=EOF && volatil==1)
         {
             ++notecardLine;
-            vectors += [(vector)data];
+            vector inyect = (vector)data;
+            float no_static = llVecDist(llGetPos(),inyect);
+            vectors += [inyect];
+            if(no_static < flotador)
+            {
+                flotador = no_static;
+                flotador_I = notecardLine;
+            }
             if(data=="<0,0,0>")
             {
-                finalmeta = llList2Vector(vectors,0);
+                A_TG = flotador_I;
+                finalmeta = llList2Vector(vectors,flotador_I);
                 llSetTimerEvent(DEG_TO_RAD);
                 llOwnerSay(text1+"Done.");
                 return;
