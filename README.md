@@ -7,7 +7,7 @@ This HUD is created with the same functions as the creators of the LSL language.
 These codes are attached to the HUD, they make most of it automatic, in order to quickly complete the missions.
 
 <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=1RHegDJc2bzZOIKUwGQJXjxZOiIyB5rSw">
+  <img src="https://drive.google.com/uc?export=view&id=1IVziQ96opx1rqB_cSYsIwQOHKm6opoxd">
 </p>
 
 <div align="center">
@@ -22,7 +22,7 @@ These codes are attached to the HUD, they make most of it automatic, in order to
 
 **+MSelect:** Set MS with an llTextBox (Coming Soon) / A numeric variable that if changed can select missions.
 
-**+GetPos:** This will output owner position, it is output with llOwnerSay.
+**+GetPos:** This will output owner position.
 
 **+MDump:** Show MS List (Coming Soon) / A numeric variable that if changed can select missions.
 
@@ -31,3 +31,11 @@ These codes are attached to the HUD, they make most of it automatic, in order to
 **READY:** The HUD will said to you when press this button.
 
 **STOP:** Stop the Main HUD Code.
+
+# Tired about be invisible?
+
+Just comment these lines into the code:
+
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=17OI-xKjjlLJCZSn4GghdNVY8YYU0UvtT">
+</p>

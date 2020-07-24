@@ -29,7 +29,7 @@
 
 ////////////////// - //////////////////
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
-string name = "HPV1.1 - ErikV7 Hud's";
+string name = "HPV1.11 - ErikV7 Hud's";
 string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
 string LINK = "https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD";
 ////////////////// - //////////////////
@@ -42,6 +42,7 @@ vector color = <0.565,0.612,0.753>;
 integer volatil;
 integer notecardLine;
 integer A_TG;
+integer A_TG_2;
 integer Listens;
 integer MS;
 integer flotador_I;
@@ -84,6 +85,12 @@ list LR5 = ["PaleoQuest A5","PaleoQuest B5","PaleoQuest C5"];
 list LR6 = ["PaleoQuest A6","PaleoQuest B6","PaleoQuest C6"];
 
 list vectors = [];
+list vectors2 = [
+<245.07700, 194.79260, 33.62424>,
+<77.15099, 115.87990, 43.0>,
+<209.52380, 129.50020, 55.51524>,
+<101.55220, 36.26934, 22.41822>
+];
 list vectors3 = [
 <26.40731, 58.82512, 34.00034>,
 <26.40731, 58.82512, 100.00034>,
@@ -91,56 +98,77 @@ list vectors3 = [
 <0,0,0>
 ];
 
-/*
-list vectors2 = [
-<127,126,21>,
-<126,126,21>,
-<125,126,21>,
-<124,126,21>,
-<123,126,21>,
-<122,126,21>,
-<121,126,21>,
-<120,126,21>,
-<119,126,21>,
-<118,126,21>,
-<117,126,21>,
-<116,126,21>,
-<115,126,21>,
-<114,126,21>,
-<113,126,21>,
-<112,126,21>,
-<111,126,21>,
-<110,126,21>,
-<0,0,0>
-];
-
-UnsitRLV()
+CleanCamera()
 {
-    integer iLX;
-    for (iLX = 0; iLX < 5; iLX++)
+    if(llGetPermissions() & PERMISSION_CONTROL_CAMERA)
     {
-        llOwnerSay("@unsit=force");
+        llClearCameraParams();
     }
-    llOwnerSay("@sit=n");
 }
-*/
 
-Teleport()
+CameraParams()
+{
+    llListenRemove(Listens);
+    Listens = llListen(1,"",owner,"");
+    llDialog(owner,inf+"\n"+Strings1(),
+    [
+    F,
+    H,
+    J,
+    B
+    ],1);
+    vector pos_cam = llList2Vector(vectors2,A_TG_2);
+    if(llGetPermissions() & PERMISSION_CONTROL_CAMERA)
+    {
+        llClearCameraParams();
+        vector pos = pos_cam + <0,0,1>;
+        rotation rot = llEuler2Rot(<90,90,-90> * DEG_TO_RAD);
+        llSetCameraParams([
+            CAMERA_ACTIVE, 1,
+            CAMERA_BEHINDNESS_ANGLE, 0.0,
+            CAMERA_BEHINDNESS_LAG, 0.0,
+            CAMERA_DISTANCE, 10.0,
+            CAMERA_FOCUS, pos+(<1,0,0>*rot),
+            CAMERA_FOCUS_LAG, 0.05 ,
+            CAMERA_FOCUS_LOCKED, TRUE,
+            CAMERA_FOCUS_OFFSET,<-10,-10,-10>,
+            CAMERA_FOCUS_THRESHOLD, 0.0,
+            CAMERA_PITCH, 0.0,
+            CAMERA_POSITION, pos,
+            CAMERA_POSITION_LAG, 0.0,
+            CAMERA_POSITION_LOCKED, TRUE,
+            CAMERA_POSITION_THRESHOLD, 0.0
+        ]);   
+    }
+}
+
+C_Stop()
+{
+    llStopMoveToTarget();
+    llOwnerSay(text1+"STOP.");
+    RLV_Allow();
+}
+
+RLV_Allow()
 {
     llOwnerSay("@sit=y");
     llOwnerSay("@tplocal[:0]=y");
     llOwnerSay("@tplocal=y");
     llOwnerSay("@tplm=y");
     llOwnerSay("@tploc=y");
+    llOwnerSay("@tplure=y");
+    llOwnerSay("@tplure_sec=y");
 }
 
-TeleportNO()
+RLV_Deny()
 {
     llOwnerSay("@sit=n");
     llOwnerSay("@tplocal[:0]=n");
     llOwnerSay("@tplocal=n");
     llOwnerSay("@tplm=n");
     llOwnerSay("@tploc=n");
+    llOwnerSay("@tplure=n");
+    llOwnerSay("@tplure_sec=n");
 }
 
 integer random_integer(integer min, integer max)
@@ -179,12 +207,11 @@ NotecardAdjust(string list_vector_name)
     }
 }
 
-MoveToTarget_Professional_ByErikV7(vector Pos,key WHOS,float SPEEDZX)
+MoveToTarget_ByErikV7(vector Pos,key WHOS,float SPEEDZX)
 {
     do
     {
         llPushObject(WHOS,(Pos-llGetPos())*(llVecDist(llGetPos(),Pos)),ZERO_VECTOR,FALSE);
-        //https://github.com/Erik-Aranda
         llMoveToTarget(Pos,SPEEDZX);
     }
     while(llVecDist(Pos,llGetPos()) > 40.0);
@@ -208,7 +235,7 @@ ProLAVA2(string namx,float SPEED2X,float dists)
         }
         else
         {
-            MoveToTarget_Professional_ByErikV7(finalmeta,owner,SPEED2X);
+            MoveToTarget_ByErikV7(finalmeta,owner,SPEED2X);
             if(llVecDist(llGetPos(),finalmeta)<=dists)
             {
                 A_TG+=1;
@@ -228,20 +255,17 @@ Server()
     owner = llGetOwner();
     string regionX = llGetRegionName();
     llTargetOmega(<0.1,0.0,0.0>,TWO_PI,0.1);
-    if(llKey2Name(owner)!="Reddlyy Resident")
+    if(llGetSubString(regionX,0,10)!="PaleoQuest ")
     {
-        if(llGetSubString(regionX,0,10)!="PaleoQuest ")
-        {
-            llOwnerSay("@remoutfit:alpha=n");
-            llSleep(0.1);
-            llOwnerSay("@detach=n");
-            llSleep(1.5);
-            llOwnerSay("@detach=force");
-            llSleep(1.5);
-            llOwnerSay("@detach=y");
-            llSleep(0.1);
-            llOwnerSay("@remoutfit:alpha=y");
-        }
+        llOwnerSay("@remoutfit:alpha=n");
+        llSleep(0.1);
+        llOwnerSay("@detach=n");
+        llSleep(1.5);
+        llOwnerSay("@detach=force");
+        llSleep(1.5);
+        llOwnerSay("@detach=y");
+        llSleep(0.1);
+        llOwnerSay("@remoutfit:alpha=y");
     }
     llOwnerSay("@recvim_sec=y");
     llOwnerSay("@detach=y");
@@ -256,6 +280,7 @@ Server()
     llSetTexture(MAINTEXTURE,ALL_SIDES);
     llSetColor(color, ALL_SIDES);
     llResetTime();
+    CleanCamera();
     Listens = llListen(1,"",owner,"");
     llRequestPermissions(owner,0x4|0x10|0x20|0x400|0x800|0x8000);
     llOwnerSay(text1+"HUD System Ready.");
@@ -265,7 +290,8 @@ Server()
 string Strings1()
 {
     return(
-    "\nhttps://github.com/Erik-Aranda\n"+
+    "\nhttps://github.com/Erik-Aranda"+
+    "\n"+LINK+"\n"+
     "\nScript '"+llGetScriptName()+"'- Memory: "+(string)llGetUsedMemory()+" to 65535"+
     "\nButtons Commands Allowed to /1"
     );
@@ -308,6 +334,7 @@ default
     {
         if(change & CHANGED_REGION)
         {
+            CleanCamera();
             if(volatil==1)
             {
                 volatil=0;
@@ -367,7 +394,14 @@ default
             llSetLinkPrimitiveParamsFast(0xFFFFFFFC,[6,llGetLocalPos()+<0,.005,.005>]);
             llSleep(0.04);
             llTargetOmega(<xs,0.0,0.0>,TWO_PI,0.1);
-            X();
+            if(MS==22)
+            {
+                CameraParams();
+            }
+            else
+            {
+                X();
+            }
         }  
     }
     listen(integer channel, string name, key id, string message)
@@ -379,18 +413,19 @@ default
                 if(message==A)
                 {
                     volatil=1;
-                    TeleportNO();
+                    RLV_Deny();
                     llOwnerSay(text1+"Reseted/Started.");
-                    MS=0; //
+                    MS=0; //Problems if are setted manually with +MSelect
                     vectors=[];
                     llSetTimerEvent(DEG_TO_RAD);
                     llListenRemove(Listens);
+                    CleanCamera();
                     return;
                 }
                 else if(message==B)
                 {
+                    CleanCamera();
                     llOwnerSay(text1+"OK.");
-                    //if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25|MS==29|MS==32|MS==35)
                     if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25|MS==29|MS==32|MS==35|MS==39)
                     {
                         MS++;
@@ -402,27 +437,44 @@ default
                 {
                     volatil=0;
                     llSetTimerEvent(0.0);
-                    llStopMoveToTarget();
-                    llOwnerSay(text1+"STOP.");
-                    Teleport();
+                    C_Stop();
+                    CleanCamera();
                     llListenRemove(Listens);
                     return;
                 }
                 else if(message==D)
                 {
-                    //LISTA DE LOS MS PARA INSERTAR
+                    //MS List Here
                     llListenRemove(Listens);
                     return;
                 }
                 else if(message==E)
                 {
-                    //LLTEXTBOX MS//ResetV();//MS=0;
+                    //llTextBox / ResetV(); / MS=; - Here
                     return;
                 }
                 else if(message==F)
                 {
-                    //CAMARAS REGION LR4, COFRE
-                    //CAMARA1 MISION COFRE: <246.88720, 196.77600, 33.04897>
+                    if(A_TG_2>0)
+                    {
+                        A_TG_2--;
+                    }
+                    CameraParams();
+                    return;
+                }
+                else if(message==H)
+                {
+                    A_TG_2 = 0;
+                    CleanCamera();
+                    return;
+                }
+                else if(message==J)
+                {
+                    if(A_TG_2<llGetListLength(vectors2)-1)
+                    {
+                        A_TG_2++;
+                    }
+                    CameraParams();
                     return;
                 }
                 else if(message==G)
@@ -445,9 +497,8 @@ default
                 }
                 else if(message==Z)
                 {
-                    llOwnerSay("https://github.com/Erik-Aranda");
-                    llOwnerSay(LINK);
-                    llOwnerSay(":)");
+                    llWhisper(0X0,"https://github.com/Erik-Aranda");
+                    llWhisper(0X0,LINK);
                     return;
                 }
             }
@@ -472,8 +523,11 @@ default
             }
             else if(MS==21)
             {
-                llOwnerSay(text1+text5+"get the key.");
                 MS=22;
+                llOwnerSay(text1+text5+"get the key.");
+                llOwnerSay(text1+"Click '"+H+"' when you want go for it. If the key disappears and you pressed this button, just touch again the HUD.");
+                A_TG_2=0;
+                CameraParams();
             }
             else if(MS==24)
             {
@@ -511,60 +565,47 @@ default
             else if(MS==38)
             {
                 llOwnerSay("@sit=y");
-                //llOwnerSay(text1+text5+"sit on the boat and enter inside until the automatic unsit.");
                 llOwnerSay(text1+text5+"sit on the boat and enter inside, then get the 'poop'. "+text5+"completed all missions/quest.");
                 vectors = llList2List(vectors3,0,llGetListLength(vectors3));
                 finalmeta = llList2Vector(vectors3,0);
                 MS=39;
             }
-            /*else if(MS==42)
-            {
-                llOwnerSay(text1+"Concatenated.");
-                MS=43;
-            }*/
             else if(MS==100)
             {
                 llOwnerSay(text1+text4);
                 MS=-1;
             }
+            finalmeta=<0,2,3>;
         }
         if(~llListFindList(PARK,(list)region))
         {
             ProLAVA2("X1_PORTAL",X1_SPEED,1.1);
-            return;
         }
         else if(llGetSubString(region,0,10)!="PaleoQuest ")
         {
             llSleep(1.0);
-            Teleport();
+            RLV_Allow();
             llStopMoveToTarget();
             integer RANDOM = random_integer(0,1);
             RLVTeleportAgent(owner,llList2String(PARK,RANDOM),0,0,0);
             llSleep(TIME_DELAY_SECONDS_PASS_REGIONS);
-            TeleportNO();
-            return;
+            RLV_Deny();
         }
         if(~llListFindList(LR1,(list)region))
         {
-            if(MS>=41) //>
+            if(MS==41|MS==42)
             {
-                MoveToTarget_Professional_ByErikV7(<190.24320, 197.54370, 37.60560>,owner,X1_SPEED);
+                MoveToTarget_ByErikV7(<190.24320, 197.54370, 37.60560>,owner,X1_SPEED);
                 llSleep(3.0);
-                llOwnerSay(text1+"Quest finished. HUD By ErikV7 - https://github.com/Erik-Aranda");
+                llOwnerSay(text1+"Quest finished. HUD By ErikV7 - "+LINK);
                 volatil=0;
+                C_Stop();
                 llSetTimerEvent(0.0);
-                llStopMoveToTarget();
-                llOwnerSay(text1+"STOP.");
-                Teleport();
-                llListenRemove(Listens);
-                llSetTimerEvent(0.0);
-                return;
             }
             else if(MS!=-1)
             {
                 ProLAVA2("X2_RG",X1_SPEED,1.1);
                 MS=100;
-                return;
             }
         }
         else if(~llListFindList(LR2,(list)region))
@@ -577,80 +618,71 @@ default
                 }
                 if(MS==1)
                 {
-                    ProLAVA2("X3_RG",X2_SPEED-8.5,1.1);
+                    ProLAVA2("X3_RG",X2_SPEED-8.35,1.1);
                 }
-                return;
             }
             else if(MS==2)
             {
                 llOwnerSay(text1+text5+"have the mask.");
                 MS=3;
-                return;
             }
             else if(MS==4|MS==5)
             {
-                ProLAVA2("X3_RG1",X2_SPEED-8.5,1.1);
+                ProLAVA2("X3_RG1",X2_SPEED-8.35,1.1);
                 MS=5;
-                return;
             }
             else if(MS==6)
             {
                 llOwnerSay(text1+text5+"pass this duct.");
                 MS=7;
-                return;
             }
             else if(MS==8|MS==9)
             {
-                ProLAVA2("X3_RG2",X2_SPEED-8.5,1.1);
+                ProLAVA2("X3_RG2",X2_SPEED-8.35,1.1);
                 MS=9;
-                return;
             }
             else if(MS==10)
             {
                 llOwnerSay(text1+text5+"put the mask on the pharaoh.");
                 MS=11;
-                return;
             }
             else if(MS==12|MS==13)
             {
                 if(MS==12)
                 {
                     llOwnerSay(text1+"In a little minutes you will go to the other region.");
+                    vectors=[];
+                    ResetV();
                     llSleep(5.0);
                     MS=13;
                 }
                 if(MS==13)
                 {
-                    ProLAVA2("X3_RG3",X2_SPEED-8.5,1.1);
+                    ProLAVA2("X3_RG3",X2_SPEED-8.35,1.1);
                 }
-                return;
             }
             else if(MS==14)
             {
                 llOwnerSay(text1+text4);
-                MS=15;   
-                return;             
+                MS=15;  
             }
         }
         else if(~llListFindList(LR3,(list)region))
         {
             if(MS==0|MS==15|MS==16)
             {
-                ProLAVA2("X4_RG",X2_SPEED-8.0,1.1);
+                ProLAVA2("X4_RG",X2_SPEED-7.0,1.1);
                 MS=16;
-                return;
             }
             else if(MS==17)
             {
                 llOwnerSay(text1+text5+"grab/take the tooth.");
                 MS=18;
-                return;
             }
             else if(MS==19|MS==20)
             {
                 ProLAVA2("X4_RG2",X2_SPEED-8.0,1.1);
                 MS=20;
-                return;
             }
         }
         else if(~llListFindList(LR4,(list)region))
@@ -659,19 +691,16 @@ default
             {
                 ProLAVA2("X5_RG",X2_SPEED-8.0,1.1);
                 MS=21;
-                return;
             }
             else if(MS==23|MS==24)
             {
-               ProLAVA2("X5_RG1",X2_SPEED-8.35,1.0); //8.5 Detected //8.0 OK
+               ProLAVA2("X5_RG1",X2_SPEED-8.35,1.0);
                MS=24;
-               return;
             }
             else if(MS==26|MS==27)
             {
                 ProLAVA2("X5_RG2",X2_SPEED-8.0,1.1);
                 MS=27;
-                return;
             }
         }
         else if(~llListFindList(LR5,(list)region))
@@ -680,25 +709,21 @@ default
             {
                 ProLAVA2("X6_RG",X2_SPEED-8.15,1.0);
                 MS=28;
-                return;
             }
             else if(MS==30|MS==31)
             {
                ProLAVA2("X6_RG1",X2_SPEED-8.15,1.0);
                MS=31;
-               return;
             }
             else if(MS==33|MS==34)
             {
                ProLAVA2("X6_RG2",X2_SPEED-8.15,1.0);
                MS=34;
-               return;
             }
             else if(MS==36|MS==37)
             {
                ProLAVA2("X6_RG3",X2_SPEED-8.15,1.0);
                MS=37;
-               return;
             }
         }
         else if(~llListFindList(LR6,(list)region))
@@ -708,47 +733,17 @@ default
             {
                 ProLAVA2("X7_RG",X2_SPEED-8.35,1.0);
                 MS=38;
-                return;
             }
-            else if(MS==40|MS==41)//else if(MS==41|MS==42)
+            else if(MS==40|MS==41)
             {
-                /*if(A_TG==ilx)
-                {
-                    UnsitRLV();
-                    //llMoveToTarget(llGetPos(),1.0);
-                }*/
                 ProLAVA2("",X1_SPEED,1.0);
-                //MS=42; 
                 MS=41;
-                return;
             }
-            else if((float)llVecDist((vector)llGetPos(),(vector)Resurrection_Circle_A6)<3.0)
+            else if(llVecDist(llGetPos(),Resurrection_Circle_A6)<3.0)
             {
                 llOwnerSay("@sit=n");
                 MS=37;
-                return;
             }
-            /*else if(MS==39 && (float)llVecDist(<0,OGP.y,0>,<0,126,0>)<3.0) //110/126/21 - 127/126/21
-            {
-                llOwnerSay(text1+"Concatenating...");
-                integer ilxx = llGetListLength(vectors2);
-                for (ilx = 0; ilx < ilxx; ilx++)
-                {
-                    vector static = llList2Vector(vectors2,ilx);
-                    if((integer)static.x == (integer)OGP.x)
-                    {
-                        finalmeta = static;
-                        jump break;
-                    }
-                }
-                @break;
-                A_TG = 0;
-                vectors = [];
-                vectors += [finalmeta];
-                vectors += [<110,126,21>];
-                vectors += [ZERO_VECTOR];
-                MS=41;
-            }*/
         }
     }
     dataserver(key query_id, string data)
@@ -756,7 +751,7 @@ default
         if(data!=EOF && volatil==1)
         {
             vector inyect = (vector)data;
-            float no_static = (float)llVecDist((vector)llGetPos(),(vector)inyect);
+            float no_static = llVecDist(llGetPos(),inyect);
             vectors += [inyect];
             if(no_static < flotador)
             {
