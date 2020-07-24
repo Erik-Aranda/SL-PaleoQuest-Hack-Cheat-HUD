@@ -34,7 +34,7 @@ These codes are attached to the HUD, they make most of it automatic, in order to
 
 # Tired about be invisible?
 
-Just comment these lines into the code:
+Just comment this line into the code:
 
 <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=17OI-xKjjlLJCZSn4GghdNVY8YYU0UvtT">
