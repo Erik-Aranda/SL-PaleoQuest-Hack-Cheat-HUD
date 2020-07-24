@@ -29,7 +29,7 @@
 
 ////////////////// - //////////////////
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
-string name = "HPV1.11 - ErikV7 Hud's";
+string name = "HPV1.11 - ErikV7 Hud's - PaleoQuest Cheat/Hack";
 string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
 string LINK = "https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD";
 ////////////////// - //////////////////
