@@ -8,24 +8,26 @@ These codes are attached to the HUD, they make most of it automatic, in order to
 
 <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=1RHegDJc2bzZOIKUwGQJXjxZOiIyB5rSw">
-
-  *****Important:***** **Enable RLV on the viewer and add the default shape to the avatar.**
 </p>
+
+<div align="center">
+    *****Important:***** **Enable RLV on the viewer and add the default shape to the avatar.**
+</div>
 
 # Button Information:
 
-**+JUMP AVI:** - Fly avatar on Z axis.
+**+JUMP AVI:** Fly avatar on Z axis.
 
-**+PUSH AVI:** - Push avatar on X axis (where do you focus with the camera).
+**+PUSH AVI:** Push avatar on X axis (where do you focus with the camera).
 
-**+MSelect:** - Set MS with an llTextBox (Coming Soon) / A numeric variable that if changed can select missions.
+**+MSelect:** Set MS with an llTextBox (Coming Soon) / A numeric variable that if changed can select missions.
 
-**+GetPos:** - This will output owner position, it is output with llOwnerSay.
+**+GetPos:** This will output owner position, it is output with llOwnerSay.
 
-**+MDump:** - Show MS List (Coming Soon) / A numeric variable that if changed can select missions.
+**+MDump:** Show MS List (Coming Soon) / A numeric variable that if changed can select missions.
 
-**ST/RST:** - Start/Reset the Main HUD Code.
+**ST/RST:** Start/Reset the Main HUD Code.
 
-**READY:** - The HUD will said to you when press this button.
+**READY:** The HUD will said to you when press this button.
 
-**STOP:** - Stop the Main HUD Code.
+**STOP:** Stop the Main HUD Code.
