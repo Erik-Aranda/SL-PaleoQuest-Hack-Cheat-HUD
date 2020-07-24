@@ -11,7 +11,7 @@ These codes are attached to the HUD, they make most of it automatic, in order to
 </p>
 
 <div align="center">
-    *****Important:***** **Enable RLV on the viewer and add the default shape to the avatar.**
+    <p><i><b>Important:</b></i> <b>Enable RLV on the viewer and add the default shape to the avatar.</b></p>
 </div>
 
 # Button Information:
