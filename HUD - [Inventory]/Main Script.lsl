@@ -1,12 +1,41 @@
-// Copyright (C) https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD
+/*Copyright (C) https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD
+===========================================================================
+                              __
+                            .d$$b
+                          .' TO$;.
+                        /  : TP._;
+                        / _.;  :Tb|
+                      /   /   ;j$j
+                  _.-'       d$$$$
+                .' ..       d$$$$;
+                /  /P'      d$$$$P. |.
+              /   '      .d$$$P' |'^'l
+            .'           `T$P^'''''  :
+        ._.'      _.'                ;
+      `-.-'.-'-' ._.       _.-'    .-'
+    `.-' _____  ._              .-'
+  -(.g$$$$$$$b.              .'
+    ''^^T$$$P^)            .(:
+      _/  -'  /.'         /:/;
+    ._.'-'`-'  ')/         /;/;
+`-.-'..--''   ' /         /  ;
+.-' ..--''        -'          :
+..--''--.-'         ('      .-(.
+  ..--''              `-'('';`
+    _.                      :
+                            ;`-
+                          :.
+                          ;*/
 
-key owner;
-
+////////////////// - //////////////////
 string inf = "PaleoQuest Hack/Cheat Engine by ErikV7";
-string name = "HPV1.09 - ErikV7 Hud's";
+string name = "HPV1.1 - ErikV7 Hud's";
 string MAINTEXTURE = "8c58522d-f1a8-19a9-c4a0-d7d96c3e81f4";
 string LINK = "https://github.com/Erik-Aranda/SL-PaleoQuest-Hack-Cheat-HUD";
+////////////////// - //////////////////
 
+key owner;
+vector Resurrection_Circle_A6 = <31.52002, 68.48956, 31.08105>;
 vector finalmeta;
 vector color = <0.565,0.612,0.753>;
 
@@ -16,6 +45,7 @@ integer A_TG;
 integer Listens;
 integer MS;
 integer flotador_I;
+integer ilx;
 
 float flotador;
 float PULSE = 0.8;
@@ -35,6 +65,9 @@ string C = "STOP";
 string D = "+MDump";
 string E = "+MSelect";
 string I = "+GetPos";
+string G = "+JUMP AVI";
+string L = "+PUSH AVI";
+string Z = "[SUPPORT ME]";
 
 //Cameras:
 string F = "<< Back";
@@ -51,6 +84,46 @@ list LR5 = ["PaleoQuest A5","PaleoQuest B5","PaleoQuest C5"];
 list LR6 = ["PaleoQuest A6","PaleoQuest B6","PaleoQuest C6"];
 
 list vectors = [];
+list vectors3 = [
+<26.40731, 58.82512, 34.00034>,
+<26.40731, 58.82512, 100.00034>,
+<-1.5, 58.82512, 100.00034>,
+<0,0,0>
+];
+
+/*
+list vectors2 = [
+<127,126,21>,
+<126,126,21>,
+<125,126,21>,
+<124,126,21>,
+<123,126,21>,
+<122,126,21>,
+<121,126,21>,
+<120,126,21>,
+<119,126,21>,
+<118,126,21>,
+<117,126,21>,
+<116,126,21>,
+<115,126,21>,
+<114,126,21>,
+<113,126,21>,
+<112,126,21>,
+<111,126,21>,
+<110,126,21>,
+<0,0,0>
+];
+
+UnsitRLV()
+{
+    integer iLX;
+    for (iLX = 0; iLX < 5; iLX++)
+    {
+        llOwnerSay("@unsit=force");
+    }
+    llOwnerSay("@sit=n");
+}
+*/
 
 Teleport()
 {
@@ -106,11 +179,12 @@ NotecardAdjust(string list_vector_name)
     }
 }
 
-MoveTarget2(vector Pos,key WHOS,float SPEEDZX)
+MoveToTarget_Professional_ByErikV7(vector Pos,key WHOS,float SPEEDZX)
 {
     do
     {
         llPushObject(WHOS,(Pos-llGetPos())*(llVecDist(llGetPos(),Pos)),ZERO_VECTOR,FALSE);
+        //https://github.com/Erik-Aranda
         llMoveToTarget(Pos,SPEEDZX);
     }
     while(llVecDist(Pos,llGetPos()) > 40.0);
@@ -119,7 +193,7 @@ MoveTarget2(vector Pos,key WHOS,float SPEEDZX)
 
 ProLAVA2(string namx,float SPEED2X,float dists)
 {
-    if(llGetListLength(vectors)<1)
+    if(llGetListLength(vectors)<1 && namx!="")
     {
         ResetV();
         NotecardAdjust(namx);
@@ -134,7 +208,7 @@ ProLAVA2(string namx,float SPEED2X,float dists)
         }
         else
         {
-            MoveTarget2(finalmeta,owner,SPEED2X);
+            MoveToTarget_Professional_ByErikV7(finalmeta,owner,SPEED2X);
             if(llVecDist(llGetPos(),finalmeta)<=dists)
             {
                 A_TG+=1;
@@ -191,6 +265,7 @@ Server()
 string Strings1()
 {
     return(
+    "\nhttps://github.com/Erik-Aranda\n"+
     "\nScript '"+llGetScriptName()+"'- Memory: "+(string)llGetUsedMemory()+" to 65535"+
     "\nButtons Commands Allowed to /1"
     );
@@ -207,9 +282,14 @@ X()
     C,
     D,
     E,
-    I
+    I,
+    G,
+    L,
+    Z
     ],1);
 }
+
+// 01101000 01110100 01110100 01110000 01110011 00111010 00101111 00101111 01100111 01101001 01110100 01101000 01110101 01100010 00101110 01100011 01101111 01101101 00101111 01000101 01110010 01101001 01101011 00101101 01000001 01110010 01100001 01101110 01100100 01100001
 
 default
 {
@@ -235,7 +315,10 @@ default
                 ResetV();
                 vectors=[];
                 finalmeta=ZERO_VECTOR;
-                MS=0;
+                if(MS!=41)
+                {
+                    MS=0;
+                }
                 llSetTimerEvent(DEG_TO_RAD);
                 volatil=1;
             }
@@ -307,7 +390,8 @@ default
                 else if(message==B)
                 {
                     llOwnerSay(text1+"OK.");
-                    if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25|MS==29|MS==32|MS==35)
+                    //if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25|MS==29|MS==32|MS==35)
+                    if(MS==3|MS==7|MS==11|MS==18|MS==22|MS==25|MS==29|MS==32|MS==35|MS==39)
                     {
                         MS++;
                     }
@@ -341,10 +425,29 @@ default
                     //CAMARA1 MISION COFRE: <246.88720, 196.77600, 33.04897>
                     return;
                 }
+                else if(message==G)
+                {
+                    llPushObject(owner,<0,0,100>,<0,0,100>,TRUE);
+                    X();
+                    return;
+                }
+                else if(message==L)
+                {
+                    llPushObject(owner,<100,0,0>,<100,0,0>,TRUE);
+                    X();
+                    return;
+                }
                 else if(message==I)
                 {
                     llSay(0X0,text1+"Pos: "+(string)llGetPos());
                     X();
+                    return;
+                }
+                else if(message==Z)
+                {
+                    llOwnerSay("https://github.com/Erik-Aranda");
+                    llOwnerSay(LINK);
+                    llOwnerSay(":)");
                     return;
                 }
             }
@@ -353,7 +456,7 @@ default
     timer()
     {
         string region = llGetRegionName();
-        if(finalmeta==ZERO_VECTOR)
+        if(finalmeta==ZERO_VECTOR && MS!=41)
         {
             llStopMoveToTarget();
             ResetV();
@@ -399,9 +502,26 @@ default
             }
             else if(MS==37)
             {
-                llOwnerSay(text1+text4);
+                if(~llListFindList(LR5,(list)region))
+                {
+                    llOwnerSay(text1+text4);
+                }
                 MS=38;
             }
+            else if(MS==38)
+            {
+                llOwnerSay("@sit=y");
+                //llOwnerSay(text1+text5+"sit on the boat and enter inside until the automatic unsit.");
+                llOwnerSay(text1+text5+"sit on the boat and enter inside, then get the 'poop'. "+text5+"completed all missions/quest.");
+                vectors = llList2List(vectors3,0,llGetListLength(vectors3));
+                finalmeta = llList2Vector(vectors3,0);
+                MS=39;
+            }
+            /*else if(MS==42)
+            {
+                llOwnerSay(text1+"Concatenated.");
+                MS=43;
+            }*/
             else if(MS==100)
             {
                 llOwnerSay(text1+text4);
@@ -411,6 +531,7 @@ default
         if(~llListFindList(PARK,(list)region))
         {
             ProLAVA2("X1_PORTAL",X1_SPEED,1.1);
+            return;
         }
         else if(llGetSubString(region,0,10)!="PaleoQuest ")
         {
@@ -421,13 +542,29 @@ default
             RLVTeleportAgent(owner,llList2String(PARK,RANDOM),0,0,0);
             llSleep(TIME_DELAY_SECONDS_PASS_REGIONS);
             TeleportNO();
+            return;
         }
         if(~llListFindList(LR1,(list)region))
         {
-            if(MS!=-1)
+            if(MS>=41) //>
+            {
+                MoveToTarget_Professional_ByErikV7(<190.24320, 197.54370, 37.60560>,owner,X1_SPEED);
+                llSleep(3.0);
+                llOwnerSay(text1+"Quest finished. HUD By ErikV7 - https://github.com/Erik-Aranda");
+                volatil=0;
+                llSetTimerEvent(0.0);
+                llStopMoveToTarget();
+                llOwnerSay(text1+"STOP.");
+                Teleport();
+                llListenRemove(Listens);
+                llSetTimerEvent(0.0);
+                return;
+            }
+            else if(MS!=-1)
             {
                 ProLAVA2("X2_RG",X1_SPEED,1.1);
                 MS=100;
+                return;
             }
         }
         else if(~llListFindList(LR2,(list)region))
@@ -442,31 +579,37 @@ default
                 {
                     ProLAVA2("X3_RG",X2_SPEED-8.5,1.1);
                 }
+                return;
             }
             else if(MS==2)
             {
                 llOwnerSay(text1+text5+"have the mask.");
                 MS=3;
+                return;
             }
             else if(MS==4|MS==5)
             {
                 ProLAVA2("X3_RG1",X2_SPEED-8.5,1.1);
                 MS=5;
+                return;
             }
             else if(MS==6)
             {
                 llOwnerSay(text1+text5+"pass this duct.");
                 MS=7;
+                return;
             }
             else if(MS==8|MS==9)
             {
                 ProLAVA2("X3_RG2",X2_SPEED-8.5,1.1);
                 MS=9;
+                return;
             }
             else if(MS==10)
             {
                 llOwnerSay(text1+text5+"put the mask on the pharaoh.");
                 MS=11;
+                return;
             }
             else if(MS==12|MS==13)
             {
@@ -480,11 +623,13 @@ default
                 {
                     ProLAVA2("X3_RG3",X2_SPEED-8.5,1.1);
                 }
+                return;
             }
             else if(MS==14)
             {
                 llOwnerSay(text1+text4);
-                MS=15;                
+                MS=15;   
+                return;             
             }
         }
         else if(~llListFindList(LR3,(list)region))
@@ -493,16 +638,19 @@ default
             {
                 ProLAVA2("X4_RG",X2_SPEED-8.0,1.1);
                 MS=16;
+                return;
             }
             else if(MS==17)
             {
                 llOwnerSay(text1+text5+"grab/take the tooth.");
                 MS=18;
+                return;
             }
             else if(MS==19|MS==20)
             {
                 ProLAVA2("X4_RG2",X2_SPEED-8.0,1.1);
                 MS=20;
+                return;
             }
         }
         else if(~llListFindList(LR4,(list)region))
@@ -511,16 +659,19 @@ default
             {
                 ProLAVA2("X5_RG",X2_SPEED-8.0,1.1);
                 MS=21;
+                return;
             }
             else if(MS==23|MS==24)
             {
                ProLAVA2("X5_RG1",X2_SPEED-8.35,1.0); //8.5 Detected //8.0 OK
                MS=24;
+               return;
             }
             else if(MS==26|MS==27)
             {
                 ProLAVA2("X5_RG2",X2_SPEED-8.0,1.1);
                 MS=27;
+                return;
             }
         }
         else if(~llListFindList(LR5,(list)region))
@@ -529,39 +680,83 @@ default
             {
                 ProLAVA2("X6_RG",X2_SPEED-8.15,1.0);
                 MS=28;
+                return;
             }
             else if(MS==30|MS==31)
             {
                ProLAVA2("X6_RG1",X2_SPEED-8.15,1.0);
                MS=31;
+               return;
             }
             else if(MS==33|MS==34)
             {
                ProLAVA2("X6_RG2",X2_SPEED-8.15,1.0);
                MS=34;
+               return;
             }
             else if(MS==36|MS==37)
             {
                ProLAVA2("X6_RG3",X2_SPEED-8.15,1.0);
                MS=37;
+               return;
             }
         }
         else if(~llListFindList(LR6,(list)region))
         {
+            vector OGP = llGetPos();
             if(MS==0|MS==37|MS==38)
             {
-                //ProLAVA2("X7_RG",X2_SPEED-8.35,1.0);
+                ProLAVA2("X7_RG",X2_SPEED-8.35,1.0);
                 MS=38;
+                return;
             }
+            else if(MS==40|MS==41)//else if(MS==41|MS==42)
+            {
+                /*if(A_TG==ilx)
+                {
+                    UnsitRLV();
+                    //llMoveToTarget(llGetPos(),1.0);
+                }*/
+                ProLAVA2("",X1_SPEED,1.0);
+                //MS=42; 
+                MS=41;
+                return;
+            }
+            else if((float)llVecDist((vector)llGetPos(),(vector)Resurrection_Circle_A6)<3.0)
+            {
+                llOwnerSay("@sit=n");
+                MS=37;
+                return;
+            }
+            /*else if(MS==39 && (float)llVecDist(<0,OGP.y,0>,<0,126,0>)<3.0) //110/126/21 - 127/126/21
+            {
+                llOwnerSay(text1+"Concatenating...");
+                integer ilxx = llGetListLength(vectors2);
+                for (ilx = 0; ilx < ilxx; ilx++)
+                {
+                    vector static = llList2Vector(vectors2,ilx);
+                    if((integer)static.x == (integer)OGP.x)
+                    {
+                        finalmeta = static;
+                        jump break;
+                    }
+                }
+                @break;
+                A_TG = 0;
+                vectors = [];
+                vectors += [finalmeta];
+                vectors += [<110,126,21>];
+                vectors += [ZERO_VECTOR];
+                MS=41;
+            }*/
         }
     }
     dataserver(key query_id, string data)
     {
         if(data!=EOF && volatil==1)
         {
-            ++notecardLine;
             vector inyect = (vector)data;
-            float no_static = llVecDist(llGetPos(),inyect);
+            float no_static = (float)llVecDist((vector)llGetPos(),(vector)inyect);
             vectors += [inyect];
             if(no_static < flotador)
             {
@@ -578,7 +773,7 @@ default
             }
             else
             {
-                llGetNotecardLine(notecard_name,notecardLine);
+                llGetNotecardLine(notecard_name,++notecardLine);
             }
         }
     }
